@@ -29,7 +29,7 @@ export class MoreleScrapper extends shopSrapper {
                     } catch (err) { return '' }
                 });
                 let res: Array<Laptop> = [];
-                function scrapLaptop(i: number) {
+                function scrapLaptop(i: number, tried?: boolean) {
                     if (i >= urls.length) resolve(res);
                     rp(urls[i]).then((html) => {
                         try {
@@ -56,7 +56,9 @@ export class MoreleScrapper extends shopSrapper {
                         } catch (err) { }
                         scrapLaptop(i + 1);
                     }).catch(err => {
-                        reject(err);
+                        if(tried)
+                            reject(err);
+                        scrapLaptop(i, true);
                     });
                 }
                 scrapLaptop(0);

@@ -31,17 +31,16 @@ function scrapAll(){
     scrap([new MediaExpertScrapper, new MoreleScrapper]);
 }
 
-
 //run scrap everyday at 12
 async function timer(){
     console.log("STARTING TODAY's SCRAPPING".bgMagenta);
+    scrapAll();
     let now = new Date();
     let millisTill12 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0, 0).getTime() - now.getTime();
     if (millisTill12 < 0)
         millisTill12 += 86400000; // it's after 10am, try 10am tomorrow.
     setTimeout(()=>{
         timer();
-        scrapAll();
     }, millisTill12);
 }
 timer();

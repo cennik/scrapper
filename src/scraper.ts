@@ -14,7 +14,7 @@ function validateElement(e: Laptop): boolean {
 
 const db = new Database();
 
-function scrapAll(scrappers: Array<shopSrapper>): void {
+async function scrap(scrappers: Array<shopSrapper>): Promise<void> {
     scrappers.forEach((scrapper) => {
         scrapper.scrapAll(async (res) => {
             res = res.filter(validateElement);
@@ -27,5 +27,21 @@ function scrapAll(scrappers: Array<shopSrapper>): void {
         })
     })
 }
+function scrapAll(){
+    scrap([new MediaExpertScrapper, new MoreleScrapper]);
+}
 
-scrapAll([new MediaExpertScrapper, new MoreleScrapper]);
+
+//run scrap everyday at 12
+async function timer(){
+    console.log("STARTING TODAY's SCRAPPING".bgMagenta);
+    let now = new Date();
+    let millisTill12 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0, 0).getTime() - now.getTime();
+    if (millisTill12 < 0)
+        millisTill12 += 86400000; // it's after 10am, try 10am tomorrow.
+    setTimeout(()=>{
+        timer();
+        scrapAll();
+    }, millisTill12);
+}
+timer();

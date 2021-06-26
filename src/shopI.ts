@@ -6,10 +6,7 @@ export abstract class shopSrapper {
     savedNum = 0;
     site = 1;
     last = EmptyLaptop;
-    logger: Logger;
-    constructor(){
-        this.logger = new Logger(`${this.constructor.name}:`.bgGreen);
-    }
+    logger = new Logger(`${this.constructor.name}:`.bgGreen, this.constructor.name);
     async scrapAll(scrapped: (res: Laptop[]) => Promise<void>): Promise<void> {
         while (true) {
             try {

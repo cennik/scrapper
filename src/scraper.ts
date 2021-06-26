@@ -6,7 +6,7 @@ import { MediaExpertScrapper } from './shops/mediaexpert';
 import { Database } from './database';
 import Logger from './logger';
 
-const logger = new Logger('SCRAPPER'.bgMagenta);
+const logger = new Logger('SCRAPPER'.bgMagenta, 'GENERAL');
 
 function validateElement(e: Laptop): boolean {
     return Number.isFinite(e.price);

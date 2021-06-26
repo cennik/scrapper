@@ -9,10 +9,9 @@ import Logger from './logger';
 export class Database {
     queue: Queue;
     con: Connection;
-    logger: Logger;
+    logger = new Logger('MYSQL'.bgCyan, 'MYSQL');
     constructor() {
         this.queue = new Queue({ concurrent: 1, interval: 100 });
-        this.logger = new Logger('MYSQL'.bgCyan);
         this.queue.on('resolve', (res) => {});
         this.queue.on('reject', (e) => this.logger.error(JSON.stringify(e)));
         this.con = mysql.createConnection({ ...dbcfg, multipleStatements: true });

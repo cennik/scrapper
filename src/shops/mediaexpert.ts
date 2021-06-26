@@ -1,4 +1,4 @@
-import rp from 'request-promise';
+import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
 import { Disk, Laptop, EmptyLaptop, getDiskType, ShopId } from '../types';
 import { shopSrapper } from '../shopI';
@@ -7,7 +7,7 @@ export class MediaExpertScrapper extends shopSrapper {
     static url = 'https://www.mediaexpert.pl/komputery-i-tablety/laptopy-i-ultrabooki/laptopy?limit=50';
     scrapSite(): Promise<Array<Laptop>> {
         return new Promise((resolve, reject) => {
-            rp(`${MediaExpertScrapper.url}&page=${this.site}`).then((html) => {
+            fetch(`${MediaExpertScrapper.url}&page=${this.site}`).then(res=>res.text()).then((html) => {
                 const $ = cheerio.load(html);
                 let els = $('.offer-box').toArray();
                 let res: Array<Laptop> = els.map(el => {

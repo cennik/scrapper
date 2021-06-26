@@ -1,4 +1,4 @@
-import rp from 'request-promise';
+import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
 import 'colorts/lib/string';
 import { Disk, Laptop, DiskType, ShopId } from '../types';
@@ -7,7 +7,7 @@ import { shopSrapper } from '../shopI';
 
 
 export class MoreleScrapper extends shopSrapper {
-    static url = 'https://www.morele.net/kategoria/laptopy-31/,,,,,,,,0,,,,/'; scrappedNum = 0;
+    static url = 'https://www.morele.net/kategoria/laptopy-31/,,,,,,,,0,,,,/'; 
     static parseDisk(s: string, t: DiskType): Array<Disk> {
         if (s.includes('2x')) {
             let size = parseInt(s.split(' ')[1]);
@@ -19,7 +19,7 @@ export class MoreleScrapper extends shopSrapper {
     }
     scrapSite(): Promise<Array<Laptop>> {
         return new Promise((resolve, reject) => {
-            rp(MoreleScrapper.url + this.site).then((html) => {
+            fetch(MoreleScrapper.url + this.site).then(res=>res.text()).then((html) => {
                 const $ = cheerio.load(html);
                 let els = $('.cat-product-name .productLink').toArray();
                 let urls: Array<string> = els.map(el => {
@@ -30,8 +30,8 @@ export class MoreleScrapper extends shopSrapper {
                 });
                 let res: Array<Laptop> = [];
                 function scrapLaptop(i: number, tried?: boolean) {
-                    if (i >= urls.length) resolve(res);
-                    rp(urls[i]).then((html) => {
+                    if (i >= urls.length) return resolve(res);
+                    fetch(urls[i]).then(res=>res.text()).then((html) => {
                         try {
                             const $ = cheerio.load(html);
                             let name = cheerio.default.text($('.prod-name'));
@@ -57,8 +57,8 @@ export class MoreleScrapper extends shopSrapper {
                         scrapLaptop(i + 1);
                     }).catch(err => {
                         if(tried)
-                            reject(err);
-                        scrapLaptop(i, true);
+                            return reject(err);
+                        scrapLaptop(i, true);//made to handle antiddos
                     });
                 }
                 scrapLaptop(0);

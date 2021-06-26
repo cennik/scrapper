@@ -1,28 +1,27 @@
 
-import mysql, { Connection, FieldInfo, Query, QueryOptions } from 'mysql';
+import mysql, { Connection, FieldInfo } from 'mysql';
 import dbcfg from '../config/db.json';
 
 import Queue from 'queue-promise';
 import { Laptop } from './types';
-import 'colorts/lib/string';
+import Logger from './logger';
 
 export class Database {
-    static log(...msgs: Array<string>) {
-        console.log('MYSQL'.cyan.bold, ...msgs);
-    }
     queue: Queue;
     con: Connection;
+    logger: Logger;
     constructor() {
         this.queue = new Queue({ concurrent: 1, interval: 100 });
-        this.queue.on('resolve', (res) => { });
-        this.queue.on('reject', (e) => Database.log(JSON.stringify(e).red));
+        this.logger = new Logger('MYSQL'.bgCyan);
+        this.queue.on('resolve', (res) => {});
+        this.queue.on('reject', (e) => this.logger.error(JSON.stringify(e)));
         this.con = mysql.createConnection({ ...dbcfg, multipleStatements: true });
         this.connect();
     }
     async connect(): Promise<void> {
         this.con.connect((err) => {
-            if (err) Database.log(err.name.bgRed);
-            Database.log("connected");
+            if (err) this.logger.error(err.name.bgRed);
+            this.logger.debug("connected");
         });
     }
     query(query: string, values?: Array<any>): Promise<{ results?: any, fields?: Array<FieldInfo> }> {

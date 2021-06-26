@@ -1,12 +1,12 @@
-import 'colorts/lib/string';
-
 import { Laptop } from './types';
 
 import { shopSrapper } from './shopI';
 import { MoreleScrapper } from './shops/morele';
 import { MediaExpertScrapper } from './shops/mediaexpert';
 import { Database } from './database';
+import Logger from './logger';
 
+const logger = new Logger('SCRAPPER'.bgMagenta);
 
 function validateElement(e: Laptop): boolean {
     return Number.isFinite(e.price);
@@ -21,10 +21,7 @@ async function scrap(scrappers: Array<shopSrapper>): Promise<void> {
             scrapper.savedNum += res.length;
             if (res.length > 0)
                 db.addEntries(res);
-            console.log(`${scrapper.constructor.name}:`.yellow.bold, `scrapped ${res.length}, ${scrapper.savedNum} saved and ${scrapper.scrappedNum} at all`.bgBlue);
-        }).then(() => {
-            console.log(`${scrapper.constructor.name}:`.yellow.bold, `finished with ${scrapper.savedNum} saved and ${scrapper.scrappedNum} at all`.bgGreen);
-        })
+        });
     })
 }
 function scrapAll(){
@@ -33,7 +30,7 @@ function scrapAll(){
 
 //run scrap everyday at 12
 async function timer(){
-    console.log("STARTING TODAY's SCRAPPING".bgMagenta);
+    logger.info("STARTING TODAY's SCRAPPING");
     scrapAll();
     let now = new Date();
     let millisTill12 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0, 0).getTime() - now.getTime();

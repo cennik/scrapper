@@ -1,25 +1,31 @@
 import { EmptyLaptop, Laptop } from "./types";
-import 'colorts/lib/string';
+import Logger from "./logger";
 
 export abstract class shopSrapper {
     scrappedNum = 0;
     savedNum = 0;
     site = 1;
     last = EmptyLaptop;
+    logger: Logger;
+    constructor(){
+        this.logger = new Logger(`${this.constructor.name}:`.bgGreen);
+    }
     async scrapAll(scrapped: (res: Laptop[]) => Promise<void>): Promise<void> {
         while (true) {
             try {
                 let els = await this.scrapSite();
                 if (this.shouldEnd(els)) {
+                    this.logger.log(`finished with ${this.savedNum} saved and ${this.scrappedNum} at all`);
                     return;//end of pages
                 } else {
                     this.scrappedNum += els.length;
                     scrapped(els);
                     this.site++;
                     this.last = els[els.length - 1];
+                    this.logger.debug(`scrapped ${els.length}, ${this.savedNum} saved and ${this.scrappedNum} at all`);
                 }
             } catch (err) {
-                console.error(this.constructor.name.yellow.bold, `error scrapping site ${this.site}, trying again...`.bgRed);
+                this.logger.error(`error scrapping site ${this.site}, trying again...`);
             }
         }
     }

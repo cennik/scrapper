@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
-import 'colorts/lib/string';
 import { Disk, Laptop, DiskType, ShopId } from '../types';
 import { shopSrapper } from '../shopI';
 

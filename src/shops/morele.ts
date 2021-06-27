@@ -35,19 +35,19 @@ export class MoreleScrapper extends shopSrapper {
                             const $ = cheerio.load(html);
                             let name = cheerio.default.text($('.prod-name'));
                             let url = urls[i];
-                            let cpu = cheerio.default.text($('.info-item', $('.table-info-item:contains("Procesor")')[0])).trim();
-                            let gpu = cheerio.default.text($('.info-item', $('.table-info-item:contains("Dedykowany układ graficzny")')[0]));
-                            if (gpu == 'Brak') gpu = cheerio.default.text($('.info-item', $('.table-info-item:contains("Zintegrowany układ graficzny")')[0]));
-                            let RAM = parseInt(cheerio.default.text($('.info-item', $('.table-info-item:contains("Pamięć RAM (zainstalowana)")')[0])));
+                            let cpu = cheerio.default.text($('.table-info-item:contains("Procesor") .info-item')).trim();
+                            let gpu = cheerio.default.text($('.table-info-item:contains("Dedykowany układ graficzny") .info-item')).trim();
+                            if (gpu == 'Brak') gpu = cheerio.default.text($('.table-info-item:contains("Zintegrowany układ graficzny") .info-item')).trim();
+                            let RAM = parseInt(cheerio.default.text($('.table-info-item:contains("Pamięć RAM (zainstalowana)") .info-item')).trim());
 
                             let disks: Array<Disk> = [];
-                            let HDD = cheerio.default.text($('.info-item', $('.table-info-item:contains("Dysk HDD")')[0])).trim();
+                            let HDD = cheerio.default.text($('.table-info-item:contains("Dysk HDD") .info-item')).trim();
                             if (HDD != 'Brak') disks.push(...MoreleScrapper.parseDisk(HDD, 'HDD'));
-                            let SSD = cheerio.default.text($('.info-item', $('.table-info-item:contains("Dysk SSD")')[0])).trim();
+                            let SSD = cheerio.default.text($('.table-info-item:contains("Dysk SSD") .info-item')).trim();
                             if (SSD != 'Brak') disks.push(...MoreleScrapper.parseDisk(SSD, 'SSD'));
-                            let SSDM2 = cheerio.default.text($('.info-item', $('.table-info-item:contains("Dysk SSD M.2")')[0])).trim();
+                            let SSDM2 = cheerio.default.text($('.table-info-item:contains("Dysk SSD M.2") .info-item')).trim();
                             if (SSDM2 != 'Brak') disks.push(...MoreleScrapper.parseDisk(SSDM2, 'SSD'));
-                            let SSDM2PCIe = cheerio.default.text($('.info-item', $('.table-info-item:contains("Dysk SSD M.2 PCIe")')[0])).trim();
+                            let SSDM2PCIe = cheerio.default.text($('.table-info-item:contains("Dysk SSD M.2 PCIe") .info-item')).trim();
                             if (SSDM2PCIe != 'Brak') disks.push(...MoreleScrapper.parseDisk(SSDM2PCIe, 'SSD'));
 
                             let price = parseInt(cheerio.default.text($('.product-price')).replace(/\s/g, ''));

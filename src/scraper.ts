@@ -9,7 +9,15 @@ import Logger from './logger';
 const logger = new Logger('SCRAPPER'.bgMagenta, 'GENERAL');
 
 function validateElement(e: Laptop): boolean {
-    return Number.isFinite(e.price);
+    if(!Number.isFinite(e.price)) return false;
+    if(!Number.isFinite(e.RAM)) return false;
+    if(!e.cpu) return false;
+    if(!e.gpu) return false;
+    if(!e.name) return false;
+    if(!e.url) return false;
+    for(let d of e.disks)
+        if(!Number.isFinite(d.size)) return false;
+    return true;
 }
 
 const db = new Database();
